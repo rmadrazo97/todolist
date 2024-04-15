@@ -85,4 +85,21 @@ class TareaController extends AbstractController
         return $this->json(['tarea' => $dataTarea]);
     }
 
+    #[Route('/tarea/{id}', name: 'delete_tarea', methods: ['DELETE'])]
+    public function deleteTarea(ManagerRegistry $doctrine, int $id): JsonResponse
+    {   
+        $entityManager = $doctrine->getManager();
+        $tarea = $entityManager->getRepository(Tarea::class)->find($id);
+
+        if (!$tarea) {
+            return $this->json(['message' => 'Tarea no encontrada no hay nada que eliminar'], 404);
+        }
+
+        $entityManager->remove($tarea);
+        $entityManager->flush();
+
+
+        return $this->json(['message' => 'Tarea eliminada correctamente']);
+    }
+
 }
