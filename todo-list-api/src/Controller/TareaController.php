@@ -7,17 +7,19 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Tarea; // Asegúrate de importar tu entidad Tarea
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
+
 
 class TareaController extends AbstractController
 {
-    #[Route('/tarea', name: 'app_tarea')]
-    public function index(): JsonResponse
-    {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/TareaController.php',
-        ]);
-    }
+    // #[Route('/tarea', name: 'app_tarea')]
+    // public function index(): JsonResponse
+    // {
+    //     return $this->json([
+    //         'message' => 'Welcome to your new controller!',
+    //         'path' => 'src/Controller/TareaController.php',
+    //     ]);
+    // }
 
     #[Route('/tareas', name: 'get_tareas', methods: ['GET'])]
     public function getTareas(ManagerRegistry $doctrine): JsonResponse
@@ -30,7 +32,7 @@ class TareaController extends AbstractController
             $tareasArray[] = [
                 'nombre' => $tarea->getNombre(),
                 'descripcion' => $tarea->getDescripcion(),
-                'estado' => $tarea->getEstado(),
+                'estado' => $tarea->isEstado(),
                 'identificador' => $tarea->getId(),
             ];
         }
@@ -38,25 +40,29 @@ class TareaController extends AbstractController
         return $this->json(['tareas' => $tareasArray]);
     }
 
-    #[Route('/tarea/{id}', name: 'get_tarea', methods: ['GET'])]
-    public function getTarea(ManagerRegistry $doctrine, int $id): JsonResponse
+    #[Route('/tarea', name: 'create_tarea', methods: ['POST'])]
+    public function createTarea(Request $request, ManagerRegistry $doctrine): JsonResponse
     {
         $entityManager = $doctrine->getManager();
-        $tarea = $entityManager->getRepository(Tarea::class)->find($id);
+        $data = json_decode($request->getContent(), true);
 
-        if (!$tarea) {
-            return $this->json(['error' => 'Tarea not found'], 404);
-        }
+        $tarea = new Tarea();
+        $tarea->setNombre($data['nombre']);
+        $tarea->setDescripcion($data['descripcion']);
+        $tarea->setEstado(true); // Estado inicial por defecto, puedes cambiarlo según tus necesidades
 
-        $tareaArray = [
-            'nombre' => $tarea->getNombre(),
-            'descripcion' => $tarea->getDescripcion(),
-            'estado' => $tarea->getEstado(),
-            'identificador' => $tarea->getId(),
-        ];
+        $entityManager->persist($tarea);
+        $entityManager->flush();
 
-        return $this->json(['tarea' => $tareaArray]);
-    }
-
+        return $this->json([
+            'message' => 'Tarea creada correctamente',
+            'tarea' => [
+                'nombre' => $tarea->getNombre(),
+                'descripcion' => $tarea->getDescripcion(),
+                'estado' => $tarea->isEstado(),
+                'identificador' => $tarea->getId()
+            ]
+        ], JsonResponse::HTTP_CREATED); // Retorna un código de estado HTTP 201, que indica que el recurso fue creado exitosamente
+    } 
 
 }
