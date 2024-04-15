@@ -49,7 +49,7 @@ class TareaController extends AbstractController
         $tarea = new Tarea();
         $tarea->setNombre($data['nombre']);
         $tarea->setDescripcion($data['descripcion']);
-        $tarea->setEstado(true); // Estado inicial por defecto, puedes cambiarlo según tus necesidades
+        $tarea->setEstado($data['estado']); // Estado inicial por defecto, puedes cambiarlo según tus necesidades
 
         $entityManager->persist($tarea);
         $entityManager->flush();
