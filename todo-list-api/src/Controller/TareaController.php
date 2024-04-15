@@ -65,4 +65,24 @@ class TareaController extends AbstractController
         ], JsonResponse::HTTP_CREATED); // Retorna un código de estado HTTP 201, que indica que el recurso fue creado exitosamente
     } 
 
+    #[Route('/tarea/{id}', name: 'get_tarea', methods: ['GET'])]
+    public function getTarea(ManagerRegistry $doctrine, int $id): JsonResponse
+    {   
+        $entityManager = $doctrine->getManager();
+        $tarea = $entityManager->getRepository(Tarea::class)->find($id);
+
+        if (!$tarea) {
+            return $this->json(['message' => 'Tarea no encontrada'], 404);
+        }
+
+        $dataTarea = [
+            'nombre' => $tarea->getNombre(),
+            'descripcion' => $tarea->getDescripcion(),
+            'estado' => $tarea->isEstado(),
+            'identificador' => $tarea->getId()
+        ];
+
+        return $this->json(['tarea' => $dataTarea]);
+    }
+
 }
