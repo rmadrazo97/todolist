@@ -79,10 +79,10 @@ class TareaController extends AbstractController
             'nombre' => $tarea->getNombre(),
             'descripcion' => $tarea->getDescripcion(),
             'estado' => $tarea->isEstado(),
-            'identificador' => $tarea->getId()
+            'id' => $tarea->getId()
         ];
 
-        return $this->json(['tarea' => $dataTarea]);
+        return $this->json(['data' => $dataTarea]);
     }
 
     #[Route('/tarea/{id}', name: 'delete_tarea', methods: ['DELETE'])]
@@ -99,7 +99,7 @@ class TareaController extends AbstractController
         $entityManager->flush();
 
 
-        return $this->json(['message' => 'Tarea eliminada correctamente']);
+        return $this->json(['message' => "Tarea id: $id eliminada correctamente"]);
     }
 
 }
