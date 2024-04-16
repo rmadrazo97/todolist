@@ -27,7 +27,10 @@
                     </div>
                     <button 
                         type="button" 
-                        class="float-right btn btn-outline-warning" 
+                        class="float-right btn btn-outline-warning editar-tarea" 
+                        data-nombre="{{ tarea.nombre }}"
+                        data-descripcion="{{ tarea.descripcion }}"
+                        data-id="{{ tarea.id }}"
                         data-toggle="modal" data-target="#tareaModal"
                     >
                         Editar
@@ -66,5 +69,20 @@
     </div>
     
     <script src="script.js"></script>
+    <script>
+         document.querySelectorAll('.editar-tarea').forEach(button => {
+            button.addEventListener('click', function() {
+                console.log('click');
+                const nombre = this.getAttribute('data-nombre');
+                const descripcion = this.getAttribute('data-descripcion');
+                const id = this.getAttribute('data-id');
+
+                console.log(nombre, descripcion, id);
+
+                document.querySelector('#name').value = nombre;
+                document.querySelector('#description').value = descripcion;
+            });
+        });
+    </script>
 </body>
 </html>
