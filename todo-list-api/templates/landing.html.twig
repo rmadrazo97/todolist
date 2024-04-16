@@ -59,6 +59,7 @@
                         <label for="description">Descripcion</label>
                         <input type="text" class="form-control" id="description" name="description">
                     </div>
+                    <input type="hidden" id="id" name="id">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -81,6 +82,7 @@
 
                 document.querySelector('#name').value = nombre;
                 document.querySelector('#description').value = descripcion;
+                document.querySelector('#id').value = id;
             });
         });
         document.querySelectorAll('.buttonSubmit').forEach(button => {
@@ -88,7 +90,7 @@
                 console.log('submit!');
                 const nombre = document.querySelector('#name').value;
                 const descripcion = document.querySelector('#description').value;
-                const id = document.querySelector('.editar-tarea').getAttribute('data-id'); 
+                const id = document.querySelector('#id').value; 
 
                 console.log(nombre, descripcion, id);
 
@@ -107,7 +109,11 @@
 
                 $.ajax(settings).done(function (response) {
                     console.log(response);
-                    $('#tareaModal').modal('hide');
+                    $.ajax(settings).done(function (response) {
+                        console.log(response);
+                        $('#tareaModal').modal('hide');
+                        location.reload(); // Reload the page
+                    });
                 });
             });
         });
