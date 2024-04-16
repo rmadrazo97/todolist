@@ -8,13 +8,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 <body>
 
-   
-
-    <div class="p-3 card">  
-        <h1 class="display-2">Todo List</h1>
-
-        <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 100px;">
-            <div  id="toast" class="toast" style="position: absolute; top: 0; right: 0;">
+    <div aria-live="polite" aria-atomic="true" class="m-2" style="position: relative; z-index: 10000000000">
+             <div id="toast" class="toast" style="position: absolute; top: 0; right: 0;">
                 <div class="toast-header">
                 <img src="..." class="rounded mr-2" alt="...">
                 <strong class="mr-auto">Tarea Actualizada</strong>
@@ -28,6 +23,12 @@
                 </div>
             </div>
         </div>
+   
+
+    <div class="p-3 card">  
+        <h1 class="display-2">Todo List</h1>
+
+        
 
         <div class="container p-mx-5">
             <ul class="list-group">
