@@ -17,6 +17,14 @@
                 <li class="list-group-item">
                     <h3>{{ tarea.id }}) {{ tarea.nombre | capitalize }}</h3>
                     <p class="d-inline-block">{{ tarea.descripcion }}</p>
+                    <div class="ml-3 d-inline-block form-check">
+                        <input class="form-check-input position-static" 
+                            type="checkbox" 
+                            id="checkbox_{{ tarea.id }}" 
+                            {% if tarea.estado == true %} checked {% endif %}
+                            value="true" aria-label="..."
+                        >
+                    </div>
                     <button 
                         type="button" 
                         class="float-right btn btn-outline-warning" 
@@ -48,10 +56,6 @@
             </div>
         </div>
     </div>
-
-
-
-    
     
     <script src="script.js"></script>
 </body>
