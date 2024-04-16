@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Tarea; // Asegúrate de importar tu entidad Tarea
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,6 +21,13 @@ class TareaController extends AbstractController
     //         'path' => 'src/Controller/TareaController.php',
     //     ]);
     // }
+
+    #[Route('/', name: 'landing_page')]
+    public function landingPage(ManagerRegistry $doctrine):Response{
+        $entityManager = $doctrine->getManager();
+        $tareas = $entityManager->getRepository(Tarea::class)->findAll();
+        return $this->render('landing.html.twig', ['tareas' => $tareas]);
+    }
 
     #[Route('/tareas', name: 'get_tareas', methods: ['GET'])]
     public function getTareas(ManagerRegistry $doctrine): JsonResponse
@@ -101,5 +109,74 @@ class TareaController extends AbstractController
 
         return $this->json(['message' => "Tarea id: $id eliminada correctamente"]);
     }
+
+    #[Route('/tarea/{id}', name: 'update_tarea', methods: ['PUT'])]
+    public function updateTarea(Request $request, ManagerRegistry $doctrine, int $id): JsonResponse
+    {
+        $entityManager = $doctrine->getManager();
+        $tarea = $entityManager->getRepository(Tarea::class)->find($id);
+
+        if (!$tarea) {
+            return $this->json(['message' => 'Tarea no encontrada no hay nada que eliminar'], 404);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if(isset($data['nombre'])) {
+            $tarea->setNombre($data['nombre']);
+        }
+
+        if(isset($data['descripcion'])) {
+            $tarea->setDescripcion($data['descripcion']);
+        }
+
+        // perisitir y cerrar
+        $entityManager->flush();
+
+        return $this->json([
+            'message' => 'Tarea actualizada correctamente',
+            'tarea' => [
+                'nombre' => $tarea->getNombre(),
+                'descripcion' => $tarea->getDescripcion(),
+                'estado' => $tarea->isEstado(),
+                'identificador' => $tarea->getId()
+            ]
+        ], 200);
+
+    }
+    
+    #[Route('/tarea/{id}/done', name: 'done_tarea', methods: ['GET'])]
+    public function doneTarea(ManagerRegistry $doctrine, int $id): JsonResponse
+    {
+        $entityManager = $doctrine->getManager();
+        $tarea = $entityManager->getRepository(Tarea::class)->find($id);
+
+        if(!$tarea) {
+            return $this->json(['message' => 'Tarea no encontrada'], 404);
+        }
+
+        $tarea->setEstado(true);
+        $entityManager->flush();
+
+        return $this->json(['message' => 'Tarea marcada como completada'], 200);
+    }
+
+    #[Route('/tarea/{id}/undone', name: 'undone_tarea', methods: ['GET'])]
+    public function undoneTarea(ManagerRegistry $doctrine, int $id): JsonResponse
+    {
+        $entityManager = $doctrine->getManager();
+        $tarea = $entityManager->getRepository(Tarea::class)->find($id);
+
+        if(!$tarea) {
+            return $this->json(['message' => 'Tarea no encontrada'], 404);
+        }
+
+        $tarea->setEstado(false);
+        $entityManager->flush();
+
+        return $this->json(['message' => 'Tarea marcada como NO-completada'], 200);
+    }
+
+
 
 }

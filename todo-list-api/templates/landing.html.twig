@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Todo List</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="p-3 card">  
+        <h1 class="display-2">Todo List</h1>
+
+
+        <div class="container">
+            <ul class="list-group">
+            {% for tarea in tareas %}
+                <li class="list-group-item">
+                    <h3>{{ tarea.nombre | capitalize }}</h3>
+                    <p class="d-inline-block">{{ tarea.descripcion }}</p>
+                    <button type="button" class="ml-5 btn btn-outline-warning">Editar</button>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    
+    
+    <script src="script.js"></script>
+</body>
+</html>
